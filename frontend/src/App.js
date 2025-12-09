@@ -40,60 +40,69 @@ function App() {
   };
 
   const handleSubmit = async (e) => {
-    e.preventDefault();
-    setLoading(true);
-    setError("");
-    setResult(null);
+  e.preventDefault();
+  setLoading(true);
+  setError("");
+  setResult(null);
 
-    // Build payload exactly how backend expects it
-    const payload = {
-      ssc_p: parseFloat(formData.ssc_p) || 0,
-      hsc_p: parseFloat(formData.hsc_p) || 0,
-      degree_p: parseFloat(formData.degree_p) || 0,
-      etest_p: parseFloat(formData.etest_p) || 0,
-      workex: formData.workex, // "yes" or "no"
+  // Build payload in the format backend expects
+  const payload = {
+    ssc_p: parseFloat(formData.ssc_p) || 0,
+    hsc_p: parseFloat(formData.hsc_p) || 0,
+    degree_p: parseFloat(formData.degree_p) || 0,
+    etest_p: parseFloat(formData.etest_p) || 0,
+    workex: formData.workex, // "yes" or "no"
 
-      projects: parseInt(formData.projects || 0, 10),
-      internships: parseInt(formData.internships || 0, 10),
-      hackathons: parseInt(formData.hackathons || 0, 10),
-      clubs: parseInt(formData.clubs || 0, 10),
-      cp_level: formData.cp_level,
+    projects: parseInt(formData.projects || 0, 10),
+    internships: parseInt(formData.internships || 0, 10),
+    hackathons: parseInt(formData.hackathons || 0, 10),
+    clubs: parseInt(formData.clubs || 0, 10),
+    cp_level: formData.cp_level,
 
-      has_dsa: formData.has_dsa,
-      has_web: formData.has_web,
-      has_ml: formData.has_ml,
-      has_app: formData.has_app,
-      has_cloud: formData.has_cloud
-    };
+    has_dsa: formData.has_dsa,
+    has_web: formData.has_web,
+    has_ml: formData.has_ml,
+    has_app: formData.has_app,
+    has_cloud: formData.has_cloud
+  };
 
-    // Optional MBA – only send if user filled it
-    if (formData.mba_p !== "") {
-      payload.mba_p = parseFloat(formData.mba_p) || 0;
-    }
+  // Only send mba_p if user entered it (optional)
+  if (formData.mba_p !== "") {
+    payload.mba_p = parseFloat(formData.mba_p) || 0;
+  }
 
-    try {
-      const res = await fetch("https://placement-predictor-backend.onrender.com/predict", {
-
+  try {
+    const res = await fetch(
+      "https://placement-predictor-platform.onrender.com", 
+      {
         method: "POST",
         headers: {
           "Content-Type": "application/json"
         },
         body: JSON.stringify(payload)
-      });
-
-      if (!res.ok) {
-        throw new Error("Server error");
       }
+    );
 
-      const data = await res.json();
-      setResult(data);
-    } catch (err) {
-      console.error(err);
-      setError("Something went wrong while predicting. Please try again.");
-    } finally {
-      setLoading(false);
+    if (!res.ok) {
+      // If backend is waking up or has a 5xx error
+      throw new Error(`Server error: ${res.status}`);
     }
-  };
+
+    const data = await res.json();
+    setResult(data);
+  } catch (err) {
+    console.error(err);
+
+    // More helpful message for free Render backend
+    setError(
+      "Backend may be waking up (free hosting). Wait 5–10 seconds and click Predict again. " +
+      "If it still fails, refresh the page and try once more."
+    );
+  } finally {
+    setLoading(false);
+  }
+};
+
 
   return (
     <div className="app">
@@ -302,7 +311,9 @@ function App() {
           <button type="submit" disabled={loading}>
             {loading ? "Predicting..." : "Predict Placement & Salary"}
           </button>
-
+          <p className="small-text">
+  Note: First request may take 5–10 seconds because the free backend needs to wake up.
+          </p>  
           {error && <p className="error">{error}</p>}
         </form>
 
