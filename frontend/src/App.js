@@ -73,7 +73,7 @@ function App() {
 
   try {
     const res = await fetch(
-      "https://placement-predictor-platform.onrender.com", 
+      "https://placement-predictor-platform.onrender.com/predict", 
       {
         method: "POST",
         headers: {
