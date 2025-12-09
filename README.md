@@ -1,4 +1,4 @@
-Placement Predictor Platform
+## Placement Predictor Platform
 
 An end-to-end web application that helps B.Tech students estimate their placement chances and expected salary range based on their academic profile, work experience, projects and skills.
 
