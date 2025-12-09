@@ -20,5 +20,5 @@ An end-to-end web application that helps B.Tech students estimate their placemen
 
 ## Live Demo
 
-- Frontend: [https://your-vercel-url.vercel.app](https://placement-predictor-platform.vercel.app/)
-- Backend API: [https://your-render-url.onrender.com](https://placement-predictor-platform.onrender.com/)
+- Frontend: [click to redirect](https://placement-predictor-platform.vercel.app/)
+- Backend API: [click to redirect](https://placement-predictor-platform.onrender.com/)
